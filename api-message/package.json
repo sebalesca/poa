@@ -1,0 +1,36 @@
+{
+  "name": "message-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A Simple message- API",
+  "main": "server.js",
+  "scripts": {
+    "test": "DEBUG=messages-api:* ava tests/ --verbose",
+    "start": "NODE_ENV=production node server.js",
+    "start-dev": "DEBUG=messages:* nodemon server.js",
+    "lint": "standard -- --fix"
+  },
+  "author": "Sebastian Oscar Lescano",
+  "license": "MIT",
+  "devDependencies": {
+    "ava": "^0.21.0",
+    "nodemon": "^1.11.0",
+    "proxyquire": "^1.8.0",
+    "sinon": "^3.1.0",
+    "standard": "^10.0.3",
+    "supertest": "^3.0.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "chalk": "^2.1.0",
+    "cors": "^2.8.5",
+    "debug": "^3.0.0",
+    "express": "^4.15.4",
+    "express-asyncify": "^1.0.0",
+    "express-jwt": "^5.3.0",
+    "express-jwt-permissions": "^1.0.0",
+    "jsonwebtoken": "^7.4.3",
+    "platziverse-db": "file:../api-db",
+    "uuid": "^3.3.2"
+  }
+}
