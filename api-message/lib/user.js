@@ -45,6 +45,7 @@ api.get('/users/connected',auth(config.auth),async (req,res,next)=>{
     res.json(connected)
     
   } catch (error) {
+    
     return handleFatalError(error)
   }
   next()

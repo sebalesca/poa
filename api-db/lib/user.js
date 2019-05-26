@@ -1,6 +1,6 @@
 'use strict'
 
-module.exports= function setupUser(UserModel){
+module.exports= function setupUser(UserModel,MessageModel){
     function findById(id){ 
         return UserModel.findOne({
         where:{
@@ -8,6 +8,13 @@ module.exports= function setupUser(UserModel){
         }
     })        
     }
+    /* function getMessagesbyId(id){
+        return UserModel.findAll({
+            where:{
+                id
+            }
+        })
+    } */
     function findByUuid(uuid){
         return UserModel.findOne({
             where:{

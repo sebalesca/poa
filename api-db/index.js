@@ -46,7 +46,7 @@ module.exports = async function (config) {
      
   }
 
-  const User = setupUser(UserModel)
+  const User = setupUser(UserModel,MessageModel)
   const Message = setupMessage(MessageModel)
   const UserMessage = setupUserMessage(UserMessageModel,UserModel,MessageModel)
   if(config.setup){

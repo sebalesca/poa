@@ -22,7 +22,7 @@ module.exports= function setupUserMessage(UserMessageModel,UserModel,MessageMode
             }
         })
     }
-    
+   
     function findByUuId(uuId){        
         return UserMessageModel.findOne({
             where:{
@@ -102,5 +102,6 @@ module.exports= function setupUserMessage(UserMessageModel,UserModel,MessageMode
         findMessageByUserId,
         findMessageByReceiver,
         create
+        
     }
 }

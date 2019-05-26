@@ -59,6 +59,8 @@ api.get('/messages', auth(config.auth), async (req, res, next) => {
   let message
   try {   
        userMessages = await UserMessage.findMessageByUserId(user.userId)
+       //mensajes= await User.getMessagesbyId(user.userId)
+       //console.log(mensajes)       
        //userMessages = await UserMessage.findMessageByReceiver(user.userId)
        for (let index = 0; index < userMessages.length; index++) {
         let element = userMessages[index]
@@ -68,7 +70,7 @@ api.get('/messages', auth(config.auth), async (req, res, next) => {
         userMessages[index].mensaje=sms.body
         userMessages[index].Remitente=remitente.username       
       
-       }
+       } 
        
         resp={
         "status": "Ok",

@@ -46,6 +46,7 @@ api.post('/logout',auth(config.auth), async (req, res, next) => {
       let id=user.userId
       let existingUser= await User.findById(id)
       existingUser.connected=false
+      existingUser.token=token
       let resp= await User.createOrUpdate(existingUser)
       if(resp){
         res.send('logout success')
@@ -80,6 +81,7 @@ api.post('/login', bodyParser.json(), async (req,res,next)=>{
   
   existingUser.connected=true  
   let token=(authl.sign(payload,config.auth.secret,{expiresIn: 60 * 30 }))
+  existingUser.token=null
   let resp= await User.createOrUpdate(existingUser)
   console.log(resp) 
     res.json({

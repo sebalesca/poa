@@ -34,7 +34,12 @@ module.exports=function setupAgentModel (config) {
     rol:{
       type:Sequelize.STRING,
       allowNull:false
+    },
+    token:{
+      type:Sequelize.JSON,
+      allowNull:true
     }
+
 
   })
 }

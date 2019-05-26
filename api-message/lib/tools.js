@@ -2,6 +2,7 @@
 const config = require('../config')
 const authl= require('../auth')
 
+
 function obtenerPayload(req){
    
   //obtengo token de la cabecera
