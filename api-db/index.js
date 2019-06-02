@@ -49,8 +49,8 @@ module.exports = async function (config) {
   const User = setupUser(UserModel,MessageModel)
   const Message = setupMessage(MessageModel)
   const UserMessage = setupUserMessage(UserMessageModel,UserModel,MessageModel)
-  if(config.setup){
-     /*se crea el usuario admin */
+  /* if(config.setup){
+     se crea el usuario admin 
   const user = await User.createOrUpdate({      
     uuid:'yyy-yyy-yyz',
     username:'administrador',
@@ -64,7 +64,7 @@ module.exports = async function (config) {
 }).catch(handleFatalError)
 console.log('este es el usuario admin para altas de usuario')
 console.log(user)
-  }
+  } */
 
 function handleFatalError (err) {
   console.error(err.message)

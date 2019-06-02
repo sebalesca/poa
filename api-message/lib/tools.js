@@ -12,6 +12,7 @@ function obtenerPayload(req){
   console.log(req.header('Authorization'))
   //decodifico el token
   let user=authl.verify(TokenArray[1],config.auth.secret)
+  user.token= TokenArray[1]
   return user  
 }
 

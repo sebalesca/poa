@@ -39,17 +39,19 @@ api.use('*', async (req, res, next) => {
   next()
 })
 api.post('/logout',auth(config.auth), async (req, res, next) => {
+  console.log('logout')
   let user=tools.obtenerPayload(req)
+  
   console.log(user)
   if(user){
     try {
       let id=user.userId
       let existingUser= await User.findById(id)
       existingUser.connected=false
-      existingUser.token=token
+      existingUser.token=user.token
       let resp= await User.createOrUpdate(existingUser)
       if(resp){
-        res.send('logout success')
+        res.json('logout success')
       }
       next()
     } catch (error) {
@@ -62,14 +64,14 @@ api.post('/logout',auth(config.auth), async (req, res, next) => {
   next()
 })
 api.post('/login', bodyParser.json(), async (req,res,next)=>{
-  debug('a recuest has come to post')
-  let {username,password,userId} =req.body
-
+  console.log('a recuest has come to post')
+  let {username,password} =req.body
+  console.log(`usuario ${username}, contraseña ${password}`)
   let existingUser= await User.findByUsernamePassword(username,password)
   console.log(existingUser)
   if(!existingUser){
 
-    return next(new Error('credenciales invalidas'))
+    return res.json('credenciales invalidas')
     
   }
   let payload={
