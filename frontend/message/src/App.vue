@@ -26,16 +26,16 @@
       .container(v-show="!mostrar")
         .columns
           .column
-            template(v-for="message in messages")
-              section.hero.is-info
-                .hero-head
-                  header.navbar
-                    .container
-                      .navbar-left
-                        .navbar-item
-                          strong Mensajes Nuevos
-                      .navbar-right.navbar-menu
-                .hero-body
+            section.hero.is-info
+              .hero-head
+                header.navbar
+                  .container
+                    .navbar-left
+                      .navbar-item
+                        strong Mensajes Nuevos
+                    .navbar-right.navbar-menu
+              .hero-body.is-paddingless
+                template(v-for="message in messages")
                   .card
                     .card-header
                       .card-header-title
@@ -46,26 +46,24 @@
                       .card-footer-item
                         p Fecha: {{message.enviado}}
           .column
-            .container
-              section.hero.is-warning
-                .hero-head
-                  header.navbar
-                    .container
-                      .navbar-left
-                        .navbar-item
-                          strong UP messages
-                      .navbar-right.navbar-menu
-                .hero-body
+            section.hero.is-warning
+              .hero-head
+                header.navbar
+                  .container
+                    .navbar-left
+                      .navbar-item
+                        strong Contactos:
+                    .navbar-right.navbar-menu
+              template(v-for="contact in contacts")
+                .hero-body.is-paddingless
                   .container.has-text-centered
                     .card
                       .card-header
                         .card-header-title
-                          p mensaje de fulanito
-                      .card-content
-                        p este es el contenido
-                      .card-footer
-                        .card-footer-item
-                          p este es un item del footer
+                          p {{contact.username}}
+                      .card-content.has-text-left
+                        input#conected(type='checkbox', v-model="contact.conected")
+                        |  Conectado
       .container(v-show="!mostrar")
         .columns
           .column.is-12
@@ -92,10 +90,15 @@ export default {
   data () {
     return {
       searchQuery: '',
-      contact: [{
-        name: 'admin',
-
-
+      contacts: [{
+        username: 'admin',
+        conected: true
+      }, {
+        username: 'sebalesca',
+        conected: false
+      }, {
+        username: 'carlos',
+        conected: true
       }],
       token: '',
       username: '',
