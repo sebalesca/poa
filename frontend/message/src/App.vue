@@ -38,13 +38,13 @@
                 template(v-for="message in messages")
                   .card
                     .card-header
-                      .card-header-title
+                      .card-header-title.has-text-success
                         p REMITENTE: {{message.remitente}}
                     .card-content
                       p {{message.mensaje}}
                     .card-footer
-                      .card-footer-item
-                        p Fecha: {{message.enviado}}
+                      .card-footer-item.is-paddingless
+                        p.has-text-left Recibido: {{message.enviado}}
           .column
             section.hero.is-warning
               .hero-head
@@ -62,7 +62,7 @@
                         .card-header-title
                           p {{contact.username}}
                       .card-content.has-text-left
-                        input#conected(type='checkbox', v-model="contact.conected")
+                        input#conected(type='checkbox', v-model="contact.conected",readonly="true")
                         |  Conectado
       .container(v-show="!mostrar")
         .columns
@@ -98,6 +98,9 @@ export default {
         conected: false
       }, {
         username: 'carlos',
+        conected: true
+      }, {
+        username: 'all',
         conected: true
       }],
       token: '',
@@ -179,6 +182,9 @@ export default {
         .catch(function (err) {
           console.log(err)
         })
+    },
+    enviar () {
+      // hay que validar los envios y antes de enviar
     }
   }
 }

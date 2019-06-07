@@ -1,0 +1,9 @@
+al hacer click en el mensaje cambiar el estado a leido.
+paginar los mensajes.
+mostrar leidos y no leidos con un filtro.
+la pass encriptada
+validar que no se envie vacio.
+tiene que seleccionar uno o varios menjsajes.
+solo enviar mensajes a conectados.
+resolver el tema de los conectados.
+agregar un endpoint para cargar imagen en alta de usuario. avatar.
