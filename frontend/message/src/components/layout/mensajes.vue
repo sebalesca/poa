@@ -1,29 +1,29 @@
 <template lang="pug">
-                section.hero.is-info
-                .hero-head
-                  header.navbar
-                    .container
-                      .navbar-left
-                        .navbar-item
-                          strong Mensajes Nuevos
-                      .navbar-right.navbar-menu
-                .hero-body
-                  .card
-                    .card-header
-                      .card-header-title
-                        p REMITENTE: {{message.remitente}}
-                    .card-content
-                      p {{message.mensaje}}
-                    .card-footer
-                      .card-footer-item
-                        p Fecha: {{message.enviado}}
+  .card
+    .card-header
+      .card-header-title
+        .columns
+          .column
+            p.is-info REMITENTE: {{message.remitente}}
+          .column
+            button.button(@click="responder") Responder
+    .card-content
+      p {{message.mensaje}}
+    .card-footer
+      .card-footer-item.is-paddingless
+        p.has-text-left Recibido: {{message.enviado}}
 </template>
 <script>
 export default {
-  props:{
-    messages:{
-      type:object,
-      required:true
+  props: {
+    message: {
+      type: Object,
+      required: true
+    }
+  },
+  methods: {
+    responder () {
+      this.$emit('responderMensaje', this.message.remitente)
     }
   }
 }

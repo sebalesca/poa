@@ -35,35 +35,20 @@
                         strong Mensajes Nuevos
                     .navbar-right.navbar-menu
               .hero-body.is-paddingless
-                template(v-for="message in messages")
-                  .card
-                    .card-header
-                      .card-header-title.has-text-success
-                        p REMITENTE: {{message.remitente}}
-                    .card-content
-                      p {{message.mensaje}}
-                    .card-footer
-                      .card-footer-item.is-paddingless
-                        p.has-text-left Recibido: {{message.enviado}}
+                section(v-for="message in messages")
+                  am-messages(:message="message",@responderMensaje="respondTo")
           .column
-            section.hero.is-warning
-              .hero-head
-                header.navbar
-                  .container
-                    .navbar-left
-                      .navbar-item
-                        strong Contactos:
-                    .navbar-right.navbar-menu
-              template(v-for="contact in contacts")
-                .hero-body.is-paddingless
-                  .container.has-text-centered
-                    .card
-                      .card-header
-                        .card-header-title
-                          p {{contact.username}}
-                      .card-content.has-text-left
-                        input#conected(type='checkbox', v-model="contact.conected",readonly="true")
-                        |  Conectado
+              section.hero.is-warning
+                .hero-head
+                  header.navbar
+                    .container
+                      .navbar-left
+                        .navbar-item
+                          strong Contactos Online:
+                      .navbar-right.navbar-menu
+                section(v-for="contact in contacts")
+                  am-contactos(:contact="contact",@selectContent="setContact")
+
       .container(v-show="!mostrar")
         .columns
           .column.is-12
@@ -83,10 +68,12 @@
 import AmFooter from '@/components/layout/Footer.vue'
 import AmHeader from '@/components/layout/Header.vue'
 import securityServices from '@/services/security'
+import AmContactos from '@/components/layout/Contactos.vue'
+import AmMessages from '@/components/layout/mensajes.vue'
 
 export default {
   name: 'app',
-  components: { AmFooter, AmHeader },
+  components: { AmFooter, AmHeader, AmContactos, AmMessages },
   data () {
     return {
       searchQuery: '',
@@ -106,6 +93,7 @@ export default {
       token: '',
       username: '',
       password: '',
+      sendTo: [],
       messages: [{
         remitente: 'sebalesca',
         mensaje: 'este es el mensaje',
@@ -115,7 +103,7 @@ export default {
         mensaje: 'este es el mensaje',
         enviado: '30/05/2019'
       }],
-      mostrar: true,
+      mostrar: false,
       errorMessage: ''
     }
   },
@@ -137,6 +125,20 @@ export default {
     }
   },
   methods: {
+    respondTo (username) {
+      this.sendTo.splice(0)
+      this.sendTo.push(username)
+      console.log(this.sendTo[0])
+    },
+    setContact (username) {
+      let exist = this.sendTo.includes(username)
+      if (!exist) {
+        this.sendTo.push(username)
+      } else {
+        this.sendTo.splice(this.sendTo.indexOf(username), 1)
+      }
+      console.log(this.sendTo)
+    },
     guardarToken () {
       localStorage.setItem('token', JSON.stringify(this.token))
     },
