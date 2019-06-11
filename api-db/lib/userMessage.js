@@ -7,7 +7,7 @@ module.exports= function setupUserMessage(UserMessageModel,UserModel,MessageMode
     function findMessageByUserId(userId,){
         
         return UserMessageModel.findAll({ 
-          attributes: [['userId','Remitente'], ['sendDate','Enviado'],['read','Leido'],'messageId'],           
+          attributes: [['userId','Remitente'], ['sendDate','Enviado'],['read','Leido'],'messageId','id'],           
           where:{
                 receiver:userId,
                 

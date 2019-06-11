@@ -4,10 +4,16 @@
       .card
         .card-header
           .card-header-title
-            p {{contact.username}} {{contact.conected}}
-        .card-content.has-text-left
-          input#conected(type='checkbox',:value="contact.username",@click="contactSelect")
-          |  Agregar a la lista
+        .card-content
+          .media
+            .media-left
+              figure.image.is-48x48
+                img(:src="contact.avatar", alt='Placeholder image')
+            .media-content
+              p.title.is-4 {{contact.username}}
+              p.subtitle.is-6 {{contact.connected}}
+              input(type='checkbox',:value="contact.username",@click="contactSelect")
+              | Agregar a la lista
 </template>
 
 <script>

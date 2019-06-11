@@ -46,9 +46,9 @@ module.exports = async function (config) {
      
   }
 
-  const User = setupUser(UserModel,MessageModel)
+  const User = setupUser(UserModel,MessageModel)  
   const Message = setupMessage(MessageModel)
-  const UserMessage = setupUserMessage(UserMessageModel,UserModel,MessageModel)
+  const UserMessage = setupUserMessage(UserMessageModel,UserModel,MessageModel)  
   /* if(config.setup){
      se crea el usuario admin 
   const user = await User.createOrUpdate({      

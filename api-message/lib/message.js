@@ -68,10 +68,10 @@ api.get('/messages', auth(config.auth), async (req, res, next) => {
         console.log(remitente.username)
         let sms=await Message.findById(element.messageId)
         userMessages[index].mensaje=sms.body
-        userMessages[index].Remitente=remitente.username       
+        userMessages[index].Remitente=remitente.username             
       
        } 
-       
+       console.log('mensaje')
         resp={
         "status": "Ok",
         "totalMensajes":userMessages.length,

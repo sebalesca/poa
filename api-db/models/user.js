@@ -38,8 +38,11 @@ module.exports=function setupAgentModel (config) {
     token:{
       type:Sequelize.JSON,
       allowNull:true
+    },
+    avatar:{
+      type: Sequelize.STRING,
+      allowNull: true
+
     }
-
-
   })
 }

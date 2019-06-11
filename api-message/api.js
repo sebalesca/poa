@@ -51,7 +51,7 @@ api.post('/logout',auth(config.auth), async (req, res, next) => {
       existingUser.token=user.token
       let resp= await User.createOrUpdate(existingUser)
       if(resp){
-        res.json('logout success')
+        res.json({"status": "ok","message": "logout success"})         
       }
       next()
     } catch (error) {
@@ -69,10 +69,8 @@ api.post('/login', bodyParser.json(), async (req,res,next)=>{
   console.log(`usuario ${username}, contraseña ${password}`)
   let existingUser= await User.findByUsernamePassword(username,password)
   console.log(existingUser)
-  if(!existingUser){
-
-    return res.json('credenciales invalidas')
-    
+  if(!existingUser){    
+    return res.json({"status": "Error","message": "credenciales invalidas"})    
   }
   let payload={
     username:username,

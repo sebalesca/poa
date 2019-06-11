@@ -40,7 +40,7 @@ module.exports= function setupUser(UserModel,MessageModel){
 
     function findConnected(){
         return UserModel.findAll({
-            attributes: ['username', 'connected'],
+            attributes: ['username', 'connected','avatar'],
             where:{
                 connected:true
             }

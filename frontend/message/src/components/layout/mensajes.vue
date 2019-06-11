@@ -4,14 +4,14 @@
       .card-header-title
         .columns
           .column
-            p.is-info REMITENTE: {{message.remitente}}
+            p.is-info REMITENTE: {{message.Remitente}}
           .column
             button.button(@click="responder") Responder
     .card-content
       p {{message.mensaje}}
     .card-footer
       .card-footer-item.is-paddingless
-        p.has-text-left Recibido: {{message.enviado}}
+        p.has-text-left Recibido: {{message.Enviado}}
 </template>
 <script>
 export default {

@@ -23,6 +23,42 @@
               .navbar-brand
                 .navbar-item.has-text-right
                   button.button(v-on:click="logout") Cerrar Sesion
+                  button.button.has-text-right(v-on:click="alta") Nuevo Usuario
+
+      am-notification(:type="typeNotification", v-show="showNotification")
+        p(slot="body") {{notification}}
+      section.section(v-show="showalta")
+        .container
+          .columns
+            .column.is-2
+              input.input.is-primary(v-model="newUser.username", type="text",placeholder="Ingrese Username")
+            .column.is-2
+              input.input.is-primary(v-model="newUser.password",type="text",placeholder="Ingrese Password")
+            .column.is-4
+              input.input.is-primary(v-model="newUser.email",type="email",placeholder="Ingrese nombre de E-mail")
+            .column
+              .select.is-rounded.is-primary.is-medium
+                select(v-model="newUser.rol",name="rol")
+                  option User
+                  option admin
+            .column
+               .card
+                .card-header
+                  .card-header-title
+                    p seleccione avatar
+                .card-content
+                  .media
+                    .media-left
+                      figure.image.is-48x48
+                        img(:src="newUser.avatar", alt='avatar')
+                    .media-content
+                      .select
+                      select(v-model="newUser.avatar")
+                        option(v-for="avatar in avatars",:value="avatar.url") {{avatar.name}}
+          .columns
+            .column.has-text-centered
+              button.button.is-primary(v-on:click="addUser") Guardar
+              button.button.is-danger(v-on:click="cleanUser") Cancelar
       .container(v-show="!mostrar")
         .columns
           .column
@@ -67,48 +103,57 @@
 <script>
 import AmFooter from '@/components/layout/Footer.vue'
 import AmHeader from '@/components/layout/Header.vue'
-import securityServices from '@/services/security'
 import AmContactos from '@/components/layout/Contactos.vue'
 import AmMessages from '@/components/layout/mensajes.vue'
-
+import AmNotification from '@/components/shared/Notification.vue'
+import userServices from '@/services/user'
+import securityServices from '@/services/security'
+import messageServices from '@/services/message'
 export default {
   name: 'app',
-  components: { AmFooter, AmHeader, AmContactos, AmMessages },
+  components: { AmFooter, AmHeader, AmContactos, AmMessages, AmNotification },
   data () {
     return {
+      showNotification: false,
+      notification: '',
+      typeNotification: '',
+      avatars: [
+        {
+          name: 'Avatar1',
+          url: 'src/assets/admin.png'
+
+        },
+        {
+          name: 'Avatar2',
+          url: 'src/assets/avatarM.png'
+
+        },
+        {
+          name: 'Avatar3',
+          url: 'src/assets/avatarF.png'
+
+        }],
+      newUser: {
+        username: '',
+        email: '',
+        rol: '',
+        password: '',
+        avatar: 'src/assets/avatarM.png'
+      },
+      showalta: false,
       searchQuery: '',
-      contacts: [{
-        username: 'admin',
-        conected: true
-      }, {
-        username: 'sebalesca',
-        conected: false
-      }, {
-        username: 'carlos',
-        conected: true
-      }, {
-        username: 'all',
-        conected: true
-      }],
+      contacts: [],
       token: '',
       username: '',
       password: '',
       sendTo: [],
-      messages: [{
-        remitente: 'sebalesca',
-        mensaje: 'este es el mensaje',
-        enviado: '30/05/2019'
-      }, {
-        remitente: 'carilila',
-        mensaje: 'este es el mensaje',
-        enviado: '30/05/2019'
-      }],
-      mostrar: false,
+      messages: [],
+      mostrar: true,
       errorMessage: ''
     }
   },
   created () {
-    /* aca cargar desde la api este es evento que me permite cargar la data  */
+    /*  */
   },
   computed: {
     searchMessage () {
@@ -120,11 +165,72 @@ export default {
   },
   watch: {
     // tiene  que tener el mismo nombre del data que escucha
-    fecha (nuevo, viejo) {
-      console.log(`este es el valor nuevo ${nuevo} y este el viejo ${viejo}`)
+    showNotification () {
+      if (this.showNotification) {
+        setTimeout(() => {
+          this.showNotification = false
+        }, 3000)
+      }
     }
   },
   methods: {
+    updateNotification (message, type) {
+      this.notification = message
+      this.typeNotification = type
+      this.showNotification = true
+    },
+    addUser () {
+      /* let regex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/
+      if(regex.test(this.newUser.email)){
+        console.log('email correcto')
+      }else{
+        console.log('mail incorrecto')
+      } */
+      // logica de nuevo user
+      userServices.add(this.newUser.username, this.newUser.password, this.newUser.rol, this.newUser.avatar, this.newUser.email, this.token)
+        .then(res => {
+          console.log(res)
+          if (res.status === 'Error' || res.status === 'error') {
+            this.updateNotification(res.message, 'is-danger')
+          } else {
+            this.updateNotification(res.messages, 'is-info')
+          }
+        }).catch(function (err) {
+          console.log(err.error)
+          console.log('error')
+        })
+    },
+    cleanUser () {
+      // logica de user
+      this.newUser.username = ''
+      this.newUser.password = ''
+      this.newUser.email = ''
+      this.newUser.rol = ''
+      this.showalta = false
+
+      console.log('cancelar alta')
+    },
+    alta () {
+      this.showalta = true
+      console.log('alta')
+    },
+    cargaContactos () {
+      userServices.ContactConected(this.token)
+        .then(res => {
+          console.log(res)
+          if (res.status === 'Error' || res.status === 'error') {
+            this.updateNotification(res.message, 'is-danger')
+          } else {
+            this.updateNotification(res.messages, 'is-info')
+          }
+        }).catch(function (err) {
+          console.log(err.error)
+          console.log('error')
+        })
+    },
+    caragaMensajes () {
+
+    },
     respondTo (username) {
       this.sendTo.splice(0)
       this.sendTo.push(username)
@@ -162,6 +268,9 @@ export default {
           localStorage.removeItem('token')
           this.username = ''
           this.password = ''
+          this.showalta = false
+          this.messages.splice(0)
+          this.contacts.splice(0)
         }).catch(function (err) {
           console.log(err)
         })
@@ -179,6 +288,58 @@ export default {
             this.mostrar = false
             this.token = res.token
             this.guardarToken()
+            // cargo los contactos en linea
+            userServices.ContactConected(res.token)
+              .then(res => {
+                console.log(res)
+                if (res.status === 'Error' || res.status === 'error') {
+                  this.updateNotification(res.message, 'is-danger')
+                } else {
+                  res.forEach(element => {
+                    this.contacts.push(element)
+                  })
+                  this.updateNotification(res.messages, 'is-info')
+                  messageServices.trae(res.token)
+                    .then(res => {
+                      console.log(res)
+                      if (res.status === 'Error' || res.status === 'error') {
+                        this.updateNotification(res.message, 'is-danger')
+                      } else {
+                        res.forEach(element => {
+                          this.messages.push(element)
+                        })
+                        this.updateNotification(res.messages, 'is-info')
+                        messageServices.traer(res.token)
+                          .then(res => {
+                            console.log(res)
+                            if (res.status === 'Error' || res.status === 'error') {
+                              this.updateNotification(res.message, 'is-danger')
+                            } else {
+                              res.forEach(element => {
+                                this.messages.push(element)
+                              })
+                              this.updateNotification(res.messages, 'is-info')
+                            }
+                          }).catch(function (err) {
+                            console.log(err.error)
+                            console.log('error')
+                          })
+                      }
+                    }).catch(function (err) {
+                      console.log(err.error)
+                      console.log('error')
+                    })
+                }
+              }).catch(function (err) {
+                console.log(err.error)
+                console.log('error')
+              })// cargo los mensajes y luego los voy a filtrar por leido
+          } else {
+            if (res.status === 'Error' || res.status === 'error') {
+              this.updateNotification(res.message, 'is-danger')
+            } else {
+              this.updateNotification(res.messages, 'is-info')
+            }
           }
         })
         .catch(function (err) {

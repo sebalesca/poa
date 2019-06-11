@@ -51,11 +51,11 @@ api.get('/users/connected',auth(config.auth),async (req,res,next)=>{
   next()
 })
 api.post('/users',auth(config.auth),async (req,res,next)=>{
-  debug('a recuest has user')
-  let {username,password,rol,email}= req.body
+  console.log('a recuest has user')
+  let {username,password,rol,email,avatar}= req.body
   //crear el uuid
-  if(!username || !password || !rol || !email){
-    return next(new Error('completar los datos obligatorios'))
+  if(!username || !password || !rol || !email || !avatar){
+    return res.json({"status": "Error","message": "todos los datos son obligatorios"})
   }
   let user=tools.obtenerPayload(req)
   if(user && user.rol=='admin') {
@@ -71,20 +71,25 @@ api.post('/users',auth(config.auth),async (req,res,next)=>{
       password,
       rol,
       email,
+      avatar,
       uuid:uuidv1(),
       createAt: new Date()
     }
     console.log(newUser)
       let resp= await User.createOrUpdate(newUser)
+      resp.message='Alta exitosa'
+      resp.status='ok'
       console.log(resp)
       res.send(resp)
       
     } catch (error) {
+      console.log('entro error alta')
       return handleFatalError(error)
       
     }
-  } 
-  res.send('not authorization')
+  }
+  res.json({"status": "Error","message": "Solo el admin puede dar Altas"}) 
+  //res.send('not authorization')
 next()
 })
 function handleFatalError (err) {
