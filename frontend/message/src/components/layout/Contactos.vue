@@ -1,5 +1,5 @@
 <template lang="pug">
-  .hero-body.is-paddingless
+  .column
     .container.has-text-centered
       .card
         .card-header
@@ -9,9 +9,8 @@
             .media-left
               figure.image.is-48x48
                 img(:src="contact.avatar", alt='Placeholder image')
-            .media-content
               p.title.is-4 {{contact.username}}
-              p.subtitle.is-6 {{contact.connected}}
+            .media-content
               input(type='checkbox',:value="contact.username",@click="contactSelect")
               | Agregar a la lista
 </template>
