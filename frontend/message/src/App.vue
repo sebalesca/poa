@@ -78,19 +78,18 @@
                 section(v-for="message in messages")
                   am-messages(:message="message",@responderMensaje="respondTo")
           .column
-              .columns.is-quarter
-                section.hero.is-warning
-                  .hero-head
-                    header.navbar
-                      .container
-                        .navbar-left
-                          .navbar-item
-                            strong Contactos Online: {{contacts.length}}
-                            .container
-                              button.button.is-success(@click="cargaContactos") Actualizar
-                        .navbar-right.navbar-menu
-                  .columns(v-for="contact in contacts")
-                    am-contactos(:contact="contact",@selectContent="setContact")
+            section.hero.is-warning
+              .hero-head
+                header.navbar
+                  .container
+                    .navbar-left
+                      .navbar-item
+                        strong Contactos Online: {{contacts.length}}
+                        .container
+                          button.button.is-success(@click="cargaContactos") Actualizar
+                    .navbar-right.navbar-menu
+              .columns(v-for="contact in contacts")
+                am-contactos(:contact="contact",@selectContent="setContact")
 
       .container(v-show="contestar")
         am-notification(:type="typeNotification", v-show="showNotification")
@@ -100,7 +99,7 @@
             nav.navbar.is-info(role='navigation', aria-label='main navigation')
               .navbar-brand
                 .navbar-item
-                  button.button(v-on:click="mensaje.destinatarios.splice(0)") Limpiar
+                  button.button(v-on:click="mensaje.destinatarios.splice(0),mensaje.mensaje = '' ") Limpiar
                 .navbar-item
                   p Send to: {{mensaje.destinatarios}}
             textarea.textarea.is-primary(v-model="mensaje.mensaje")
@@ -250,10 +249,12 @@ export default {
           } else {
             this.contacts.splice(1)
             res.forEach(element => {
-              this.contacts.push(element)
+              if (element.username !== this.username) {
+                this.contacts.push(element)
+              }
             })
             // let exist = this.contacts.includes(username)
-            this.contacts.splice(this.contacts.indexOf(this.username), 1)
+            // this.contacts.splice(this.contacts.indexOf(this.username), 1)
           }
         }).catch(function (err) {
           console.log(err.error)
@@ -296,6 +297,10 @@ export default {
       console.log(username)
     },
     setContact (username) {
+      if (this.mensaje.destinatarios.length === 0) {
+        this.mensaje.destinatarios.push({ 'username': username })
+        return
+      }
       if (username === 'All') {
         this.mensaje.destinatarios.splice(0)
         this.contacts.forEach(user => {
@@ -305,12 +310,21 @@ export default {
         })
         return
       }
-      let exist = this.mensaje.destinatarios.includes(username)
+
+      for (let index = 0; index < this.mensaje.destinatarios.length; index++) {
+        const element = this.mensaje.destinatarios[index]
+        if (element.username === username) {
+          this.mensaje.destinatarios.splice(index, 1)
+        } else {
+          this.mensaje.destinatarios.push({ 'username': username })
+        }
+      }
+      /* let exist = this.mensaje.destinatarios.includes(username)
       if (!exist) {
         this.mensaje.destinatarios.push({ 'username': username })
       } else {
         this.mensaje.destinatarios.splice(this.mensaje.destinatarios.indexOf(username), 1)
-      }
+      } */
       console.log(this.mensaje.destinatarios)
     },
     guardarToken () {
@@ -368,6 +382,7 @@ export default {
                 if (res.status === 'Error' || res.status === 'error') {
                   this.updateNotification(res.message, 'is-danger')
                 } else {
+                  this.contacts.splice(1)
                   res.forEach(element => {
                     if (element.username !== this.username) {
                       this.contacts.push(element)
@@ -393,6 +408,14 @@ export default {
         })
     },
     enviar () {
+      if (this.mensaje.mensaje === '') {
+        this.updateNotification('debe ingresar un texto', 'is-danger')
+        return
+      }
+      if (this.mensaje.destinatarios.length === 0) {
+        this.updateNotification('debe ingresar seleccionar un destinatario', 'is-danger')
+        return
+      }
       // hay que validar los envios y antes de enviar
       messageServices.enviar(this.mensaje.mensaje, this.mensaje.destinatarios, this.token)
         .then(res => {
