@@ -9,3 +9,8 @@ El otro módulo se denominó **api-message** que es la *api* propiamente dicha, 
 * Tener en cuenta se necesita *postgres* para la correcta generación de las tablas 
 * Para ejecutar el módulo api-message en desarrollo: *npm run start-dev*
 * En ambos casos de deben instalar las dependencias con *npm install* 
+
+##tp2 front
+la app se realizo en con vue.js y pug como plantilla, se utilizo webpack para el desarrollo y despliegue de la app
+para las peticiones de datos se uso **trae** un modulo de npm hecho por dev argentinos. las interfaces se estilaron 
+con bulma.io para acelerar el desarrollo
