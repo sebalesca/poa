@@ -58,8 +58,7 @@ api.post('/users',auth(config.auth),async (req,res,next)=>{
     return res.json({"status": "Error","message": "todos los datos son obligatorios"})
   }
   let user=tools.obtenerPayload(req)
-  if(user && user.rol=='admin') {
-    
+  if(user && user.rol=='admin') {    
     try {
       console.log('admin puede dar altas')
       let exist= await User.findByUsername(username)
@@ -87,8 +86,10 @@ api.post('/users',auth(config.auth),async (req,res,next)=>{
       return handleFatalError(error)
       
     }
+  }else{
+    res.json({"status": "Error","message": "Solo el admin puede dar Altas"}) 
   }
-  res.json({"status": "Error","message": "Solo el admin puede dar Altas"}) 
+  
   //res.send('not authorization')
 next()
 })

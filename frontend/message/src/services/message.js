@@ -12,18 +12,22 @@ messageService.traer = function (token) {
       return res.data
     })
 }
-messageService.leido = function (uuid, token) {
+messageService.leido = function (id, token) {
   console.log(token)
   config.headers = {
     'Authorization': `Bearer ${token}`
   }
-  return apiMessageService.post('/message', { uuid }, config)
+  return apiMessageService.post('/messages/read', { id }, config)
+    .then(function (res) {
+      return res.data
+    })
 }
 messageService.enviar = function (mensaje, destinatarios, token) {
   config.headers = {
     'Authorization': `Bearer ${token}`
   }
-  return apiMessageService.post('/messages', { mensaje, destinatarios }, config)
+  return apiMessageService.post('/messages',
+    { mensaje, destinatarios }, config)
     .then(function (res) {
       return res.data
     })

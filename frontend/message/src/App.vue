@@ -22,9 +22,11 @@
             nav.navbar.is-info(role='navigation', aria-label='main navigation')
               .navbar-brand
                 .navbar-item.has-text-right
-                  button.button(v-on:click="logout") Cerrar Sesion
+                  button.button.is-danger(v-on:click="logout") Cerrar Sesion
                   button.button.has-text-right(v-on:click="alta") Nuevo Usuario
                   button.button(v-on:click="contestar=true") Nuevo Mensaje
+                navbar-item.has-text-right
+                  p Bievenido : {{username}}
       am-notification(:type="typeNotification", v-show="showNotification")
         p(slot="body") {{notification}}
       section.section(v-show="showalta")
@@ -76,18 +78,23 @@
                 section(v-for="message in messages")
                   am-messages(:message="message",@responderMensaje="respondTo")
           .column
-              section.hero.is-warning
-                .hero-head
-                  header.navbar
-                    .container
-                      .navbar-left
-                        .navbar-item
-                          strong Contactos Online:
-                      .navbar-right.navbar-menu
-                .columns(v-for="contact in contacts")
-                  am-contactos(:contact="contact",@selectContent="setContact")
+              .columns.is-quarter
+                section.hero.is-warning
+                  .hero-head
+                    header.navbar
+                      .container
+                        .navbar-left
+                          .navbar-item
+                            strong Contactos Online: {{contacts.length}}
+                            .container
+                              button.button.is-success(@click="cargaContactos") Actualizar
+                        .navbar-right.navbar-menu
+                  .columns(v-for="contact in contacts")
+                    am-contactos(:contact="contact",@selectContent="setContact")
 
       .container(v-show="contestar")
+        am-notification(:type="typeNotification", v-show="showNotification")
+          p(slot="body") {{notification}}
         .columns
           .column.is-12
             nav.navbar.is-info(role='navigation', aria-label='main navigation')
@@ -99,6 +106,7 @@
             textarea.textarea.is-primary(v-model="mensaje.mensaje")
             .container.has-text-centered
               button.button(v-on:click="enviar") Enviar
+              button.button(v-on:click="cleanMensaje") Cancelar
       am-footer
 </template>
 
@@ -225,6 +233,10 @@ export default {
 
       console.log('cancelar alta')
     },
+    cleanMensaje () {
+      this.mensaje.destinatarios.splice(0)
+      this.contestar = false
+    },
     alta () {
       this.showalta = true
       console.log('alta')
@@ -236,12 +248,17 @@ export default {
           if (res.status === 'Error' || res.status === 'error') {
             this.updateNotification(res.message, 'is-danger')
           } else {
-            this.updateNotification(res.messages, 'is-info')
+            this.contacts.splice(1)
+            res.forEach(element => {
+              this.contacts.push(element)
+            })
+            // let exist = this.contacts.includes(username)
+            this.contacts.splice(this.contacts.indexOf(this.username), 1)
           }
         }).catch(function (err) {
           console.log(err.error)
           console.log('error')
-        })
+        })// cargo los mensajes y luego los voy a filtrar por leido
     },
     caragaMensajes () {
       messageServices.traer(this.token)
@@ -260,15 +277,28 @@ export default {
           this.updateNotification(err.message, 'is-danger')
         })
     },
-    respondTo (username) {
-      this.sendTo.splice(0)
-      this.sendTo.push(username)
+    respondTo (username, id) {
+      this.mensaje.destinatarios.splice(0)
+      this.mensaje.destinatarios.push({ 'username': username })
       this.contestar = true
+      messageServices.leido(id, this.token)
+        .then(res => {
+          if (res.status === 'Error' || res.status === 'error') {
+            this.updateNotification(res.message, 'is-danger')
+          } else {
+            this.updateNotification(res.message, 'is-success')
+            this.caragaMensajes()
+          }
+        }).catch(function (err) {
+          this.updateNotification(err.message, 'is-danger')
+        })
+
+      console.log(username)
     },
     setContact (username) {
       let exist = this.mensaje.destinatarios.includes(username)
       if (!exist) {
-        this.mensaje.destinatarios.push(username)
+        this.mensaje.destinatarios.push({ 'username': username })
       } else {
         this.mensaje.destinatarios.splice(this.mensaje.destinatarios.indexOf(username), 1)
       }
@@ -318,6 +348,8 @@ export default {
             this.mostrar = false
             this.token = res.token
             this.guardarToken()
+            this.username = res.username
+            console.log(res)
             // cargo los contactos en linea
             userServices.ContactConected(res.token)
               .then(res => {
@@ -328,6 +360,8 @@ export default {
                   res.forEach(element => {
                     this.contacts.push(element)
                   })
+                  // let exist = this.contacts.includes(username)
+                  this.contacts.splice(this.contacts.indexOf(this.username), 1)
                 }
               }).catch(function (err) {
                 console.log(err.error)
@@ -352,8 +386,11 @@ export default {
           // console.log(res.mensajesRecibidos)
           if (res.status === 'Error' || res.status === 'error') {
             this.updateNotification(res.message, 'is-danger')
+            console.log(res)
           } else {
-            this.updateNotification(res.message, 'is-danger')
+            this.updateNotification(res.message, 'is-success')
+            this.mensaje.mensaje = ''
+            this.mensaje.destinatarios.splice(0)
           }
         }).catch(function (err) {
           this.updateNotification(err.message, 'is-danger')

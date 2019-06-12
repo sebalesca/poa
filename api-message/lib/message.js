@@ -87,17 +87,19 @@ api.get('/messages', auth(config.auth), async (req, res, next) => {
 
 api.post('/messages',auth(config.auth), async (req,res,next)=>{
   let user=tools.obtenerPayload(req)  
-  console.log(user)
+  console.log(req)
+
+
+
     let mensaje=req.body.mensaje
     let destinatarios= req.body.destinatarios
+    let id= req.body.id
     //console.log(mensaje)
     /* console.log(destinatarios) */
-  try {    
-
-    if (!mensaje || !destinatarios) {
-      return next(new Error('Formato invalido'))
-    }   
-
+  try { 
+    if(!mensaje || !destinatarios) {
+      return res.json({"status": "Error","message": "todos los datos son obligatorios"})
+    }
     const newMessage= await Message.createOrUpdate({
       uuid:uuidv1(),
       body:mensaje,
@@ -126,7 +128,7 @@ api.post('/messages',auth(config.auth), async (req,res,next)=>{
           console.log(element)
         }
       }
-      res.json({'status':'ok','message':'se ha registrado correctamente'})
+      res.json({'status':'ok','message':'Se ha Enviado correctamente'})
     }
     
   } catch (error) {
@@ -135,6 +137,30 @@ api.post('/messages',auth(config.auth), async (req,res,next)=>{
   }
 
 })
+
+//se agrega el leido //
+api.post('/messages/read',auth(config.auth), async (req,res,next)=>{
+  let user=tools.obtenerPayload(req)
+  console.log(req.body)  
+  
+  try { 
+    let id= req.body.id  
+    if(!id) {
+      return res.json({"status": "Error","message": "falta id mensaje"})
+    }
+    const updMessage= await UserMessage.Update(id)
+    if(updMessage)
+    {      
+      res.json({'status':'ok','message':'marcado como leido'})
+    }
+    
+  } catch (error) {
+    return handleFatalError(error)
+    next()
+  }
+
+})
+
 
 function handleFatalError (err) {
   console.error(err.message)

@@ -10,6 +10,7 @@ module.exports= function setupUserMessage(UserMessageModel,UserModel,MessageMode
           attributes: [['userId','Remitente'], ['sendDate','Enviado'],['read','Leido'],'messageId','id'],           
           where:{
                 receiver:userId,
+                read: false
                 
             }
 
@@ -32,7 +33,7 @@ module.exports= function setupUserMessage(UserMessageModel,UserModel,MessageMode
     }
 
 
-    async function create (uuidUser,receiver,idMessage, userMessage) {
+      async function create (uuidUser,receiver,idMessage, userMessage) {
         
       console.log(receiver)
       let user = await UserModel.findOne({
@@ -43,13 +44,32 @@ module.exports= function setupUserMessage(UserMessageModel,UserModel,MessageMode
             uuid:uuidMessge
           }
         }) */
-        if (user) {
+       if (user) {
           Object.assign(userMessage,{userId:user.id,receiver:receiver,messageId:idMessage})
           
           const result = await UserMessageModel.create(userMessage)
           return result.toJSON()
         }
-      }
+    } 
+
+    async function Update (id) {
+        
+      console.log(id)
+      
+        const cond={
+          where:{
+            id
+          }
+        }
+        let existingMessage= await UserMessageModel.findOne(cond)
+
+        if(existingMessage){
+          existingMessage.read=true
+          const updated= await UserMessageModel.update(existingMessage,cond)
+          return updated ? UserMessageModel.findOne(cond) : existingMessage
+        }
+        
+      }     
 
     /*
     
@@ -101,7 +121,8 @@ module.exports= function setupUserMessage(UserMessageModel,UserModel,MessageMode
         findByUuId,
         findMessageByUserId,
         findMessageByReceiver,
-        create
+        create,
+        Update
         
     }
 }

@@ -23,6 +23,7 @@
               button.button Enviar
     .card-footer
       .card-footer-item.is-paddingless
+        p Numero: {{message.id}}
         p.has-text-left Recibido: {{message.Enviado}}
 </template>
 <script>
@@ -35,7 +36,7 @@ export default {
   },
   methods: {
     responder () {
-      this.$emit('responderMensaje', this.message.Remitente)
+      this.$emit('responderMensaje', this.message.Remitente, this.message.id)
     }
   }
 }

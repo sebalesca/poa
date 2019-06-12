@@ -28,7 +28,7 @@ module.exports = async function (config) {
   const MessageModel= setupMessageModel(config)
   const UserModel= setupUserModel(config)
   const UserMessageModel= setupUserMessageModel(config)
-
+  
   
   //se agregan las relaciones de las clases 
   UserModel.hasMany(UserMessageModel)
@@ -45,7 +45,7 @@ module.exports = async function (config) {
     await sequelize.sync({ force: true })
      
   }
-
+  
   const User = setupUser(UserModel,MessageModel)  
   const Message = setupMessage(MessageModel)
   const UserMessage = setupUserMessage(UserMessageModel,UserModel,MessageModel)  
