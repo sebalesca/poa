@@ -296,6 +296,15 @@ export default {
       console.log(username)
     },
     setContact (username) {
+      if (username === 'All') {
+        this.mensaje.destinatarios.splice(0)
+        this.contacts.forEach(user => {
+          if (user.username !== 'All') {
+            this.mensaje.destinatarios.push({ 'username': user.username })
+          }
+        })
+        return
+      }
       let exist = this.mensaje.destinatarios.includes(username)
       if (!exist) {
         this.mensaje.destinatarios.push({ 'username': username })
@@ -331,6 +340,8 @@ export default {
           this.messages.splice(0)
           this.contacts.splice(0)
           this.sendTo.splice(0)
+          this.mensages.destinatarios.splice(0)
+          this.mensaje.mensaje = ''
         }).catch(function (err) {
           console.log(err)
         })
@@ -358,10 +369,12 @@ export default {
                   this.updateNotification(res.message, 'is-danger')
                 } else {
                   res.forEach(element => {
-                    this.contacts.push(element)
+                    if (element.username !== this.username) {
+                      this.contacts.push(element)
+                    }
                   })
                   // let exist = this.contacts.includes(username)
-                  this.contacts.splice(this.contacts.indexOf(this.username), 1)
+                  // this.contacts.splice(this.contacts.indexOf(this.username), 1)
                 }
               }).catch(function (err) {
                 console.log(err.error)
